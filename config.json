@@ -17,12 +17,12 @@
     "PASSWORD": "",
     "OTPKEY": "",
     "BOTNAME": "patakha kudi",
-    "PREFIX": ".",
+    "PREFIX": "#",
     "ADMINBOT": [
-        "100084364343197"
+        "61583409240142"
     ],
     "NDH": [
-        "100084364343197"
+        "61583409240142"
     ],
     "DATABASE": {
         "sqlite": {
