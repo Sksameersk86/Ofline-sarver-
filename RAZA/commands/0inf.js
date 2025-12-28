@@ -35,10 +35,10 @@ module.exports.run = async function ({ api, event }) {
   const chosenImage = imgLinks[Math.floor(Math.random() * imgLinks.length)];
 
   const msg = `✨ 𝙎𝙒𝘼𝙂 𝙈𝙊𝘿𝙀 𝙊𝙉 ✨\n━━━━━━━━━━━━━━━\n\n` +
-              `👑 𝗕𝗢𝗧: ${global.config.BOTNAME || "🔥 RAJ XWD THAKUR 👿"}\n` +
-              `🧠 𝗢𝗪𝗡𝗘𝗥:𝙍𝘼𝙅 𝙏𝙃𝘼𝙆𝙐𝙍 𝙓𝙒𝘿  🔥 (UID:100032269830615 )\n` +
+              `👑 𝗕𝗢𝗧: ${global.config.BOTNAME || "🧸_𝐑𝐀𝐉_𝐗𝐖𝐃_🧸"}\n` +
+              `🧠 𝗢𝗪𝗡𝗘𝗥:𝙍𝘼𝙅 𝙏𝙃𝘼𝙆𝙐𝙍 𝙓𝙒𝘿  🔥 (UID:61583409240142)\n` +
               `📸 𝗜𝗡𝗦𝗧𝗔: @rajthakur8` +
-              `📍 𝗣𝗥𝗘𝗙𝗜𝗫: ${global.config.PREFIX || "+"}\n` +
+              `📍 𝗣𝗥𝗘𝗙𝗜𝗫: ${global.config.PREFIX || "#"}\n` +
               `📆 𝗗𝗔𝗧𝗘: ${dateNow}\n` +
               `⏳ 𝗨𝗣𝗧𝗜𝗠𝗘: ${hours}h ${minutes}m ${seconds}s\n\n` +
               `💌 𝗧𝗬𝗣𝗘 '${global.config.PREFIX || "+"}help' 𝗙𝗢𝗥 𝗖𝗢𝗠𝗠𝗔𝗡𝗗𝗦 💌\n` +
