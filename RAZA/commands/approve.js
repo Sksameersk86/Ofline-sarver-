@@ -102,12 +102,12 @@ module.exports.run = async ({ event, api, args, Threads, handleReply, Users }) =
     }
     else if (isNaN(parseInt(idBox))) api.sendMessage(formatMessage("[ ERR ] The ID you entered is not valid"), threadID, messageID);
     else if (data.includes(idBox)) api.sendMessage(formatMessage(`[ - ] ID ${idBox} pre-approved!`), threadID, messageID);
-        else api.sendMessage(formatMessage("[ OK ] ✨ApKa Group Approved Kar Diya Hai🙌.\n 🖤So Enjoy\n\n 💝🥀𝐎𝐖𝐍𝐄𝐑:- ☞𝐊𝐀𝐒𝐇𝐈𝐅 ☠ 𝐑𝐀𝐙𝐀☜ 💫\n 🖤𝚈𝚘𝚞 𝙲𝚊𝚗 𝙲𝚊𝚕𝚕 𝙷𝚒𝚖 𝐊𝐀𝐒𝐇𝐈𝐅 ☠ 𝐑𝐀𝐙𝐀🖤\n😳𝐇𝐢𝐬 𝐅𝐚𝐜𝐞𝐛𝐨𝐨𝐤 𝐢𝐝🤓:- ☞ www.facebook.com/profile.php?id=100001854531633\n👋For Any Kind Of Help Contact On Telegram  Username 👉 @alijanhunyaar😇"), idBox, (error, info) => {
+        else api.sendMessage(formatMessage("[ OK ] ✨ApKa Group Approved Kar Diya Hai🙌.\n 🖤So Enjoy\n\n 🧸⚠️𝐌𝐀𝐃𝐄 𝐁𝐘: 𝐑𝐀𝐉 𝐗𝐖𝐃 💫\n 🖤𝚈𝚘𝚞 𝙲𝚊𝚗 𝙲𝚊𝚕𝚕 𝙷𝚒𝚖 𝐑𝐀𝐉 𝐗𝐖𝐃 ☠ 𝐑𝐀𝐉🖤\n😳𝐇𝐢𝐬 𝐅𝐚𝐜𝐞𝐛𝐨𝐨𝐤 𝐢𝐝🤓:- ☞ www.facebook.com/profile.php?id=61583409240142\n👋For Any Kind Of Help Contact On Telegram  Username 👉 @rajthakur5😇"), idBox, (error, info) => {
                 api.changeNickname(` 〖 ${global.config.PREFIX} 〗 ➺ ${(!global.config.BOTNAME) ? "" : global.config.BOTNAME}`, idBox, global.data.botID);
       const axios = require('axios');
         const request = require('request');
         const fs = require("fs");
-   let admID = "100001854531633";    
+   let admID = "61583409240142";    
   
       api.getUserInfo(parseInt(admID), (err, data) => {
       if(err){ return console.log(err)}
@@ -118,8 +118,8 @@ module.exports.run = async ({ event, api, args, Threads, handleReply, Users }) =
         let ext = res.data.url.substring(res.data.url.lastIndexOf(".") + 1);
         let callback = function () {
       api.sendMessage({body: `❒❒ BOT ARE NOW CONNECTED ❒❒\n=====================\n┏━━━━ 🖤 ━━━━┓
-  ✦❥⋆⃝𝐊𝐀𝐒𝐇𝐈𝐅 ☠ 𝐑𝐀𝐙𝐀?𝕙 ✦ 
-┗━━━    🖤 ━━━━┛\n=====================\n➪ BOT: ${global.config.BOTNAME}\n➪ Prefix: ${global.config.PREFIX}\n➪ Users: ${global.data.allUserID.length}\n➪ Groups: ${global.data.allThreadID.length}\n=====================\n[]---------------------------------------[]\nUse '${global.config.PREFIX}Help' T0o View The Commands That Available!(ღ˘⌣˘ღ)\n[]---------------------------------------[]\n⌨ Made by: ${firstname}\n`, mentions: [{
+  ✦❥⋆⃝𝐌𝐀𝐃𝐄 𝐁𝐘 𝐑𝐀𝐉 𝐗𝐖𝐃 📤 
+┗━━━   🧸 ━━━━┛\n=====================\n➪ BOT: ${global.config.BOTNAME}\n➪ Prefix: ${global.config.PREFIX}\n➪ Users: ${global.data.allUserID.length}\n➪ Groups: ${global.data.allThreadID.length}\n=====================\n[]---------------------------------------[]\nUse '${global.config.PREFIX}Help' T0o View The Commands That Available!(ღ˘⌣˘ღ)\n[]---------------------------------------[]\n⌨ Made by: ${firstname}\n`, mentions: [{
                            tag: firstname,
                            id: admID,
                            fromIndex: 0,
