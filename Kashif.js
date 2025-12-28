@@ -3,7 +3,7 @@ const { readdirSync, readFileSync, writeFileSync, existsSync, unlinkSync, rm } =
 const { join, resolve } = require("path");
 const { execSync } = require('child_process');
 const logger = require("./utils/log.js");
-const { login } = require("./kashif-raza-fca/module/index");
+const login = require("fca-raj-xwd"); 
 const axios = require("axios");
 const listPackage = JSON.parse(readFileSync('./package.json')).dependencies;
 const listbuiltinModules = require("module").builtinModules;
@@ -26,7 +26,7 @@ global.client = new Object({
                 return `${moment.tz("Asia/Kolkata").format("mm")}`;
             case "hours":
                 return `${moment.tz("Asia/Kolkata").format("HH")}`;
-            case "date":
+            case "date": 
                 return `${moment.tz("Asia/Kolkata").format("DD")}`;
             case "month":
                 return `${moment.tz("Asia/Kolkata").format("MM")}`;
@@ -78,7 +78,12 @@ try {
     logger.loader("Found file config: config.json");
 }
 catch {
-    return logger.loader("config.json not found!", "error");
+    if (existsSync(global.client.configPath.replace(/\.json/g,"") + ".temp")) {
+        configValue = readFileSync(global.client.configPath.replace(/\.json/g,"") + ".temp");
+        configValue = JSON.parse(configValue);
+        logger.loader(`Found: ${global.client.configPath.replace(/\.json/g,"") + ".temp"}`);
+    }
+    else return logger.loader("config.json not found!", "error");
 }
 
 try {
@@ -88,6 +93,8 @@ try {
 catch { return logger.loader("Can't load file config!", "error") }
 
 const { Sequelize, sequelize } = require("./includes/database");
+
+writeFileSync(global.client.configPath + ".temp", JSON.stringify(global.config, null, 4), 'utf8');
 
 /////////////////////////////////////////
 //========= Load language use =========//
@@ -107,7 +114,7 @@ for (const item of langData) {
 }
 
 global.getText = function (...args) {
-    const langText = global.language;
+    const langText = global.language;    
     if (!langText.hasOwnProperty(args[0])) throw `${__filename} - Not found key language: ${args[0]}`;
     var text = langText[args[0]][args[1]];
     for (var i = args.length - 1; i > 0; i--) {
@@ -120,16 +127,11 @@ global.getText = function (...args) {
 try {
     var appStateFile = resolve(join(global.client.mainPath, global.config.APPSTATEPATH || "appstate.json"));
     var appState = require(appStateFile);
-    logger.loader(global.getText("kashif", "foundPathAppstate"))
+    logger.loader(global.getText("priyansh", "foundPathAppstate"))
 }
-catch { return logger.loader(global.getText("kashif", "notFoundPathAppstate"), "error") }
+catch { return logger.loader(global.getText("priyansh", "notFoundPathAppstate"), "error") }
 
 //========= Login account and start Listen Event =========//
-
-async function checkBan(api) {
-    global.checkBan = true;
-    return true;
-}
 
 function onBot({ models: botModel }) {
     const loginData = {};
@@ -138,24 +140,17 @@ function onBot({ models: botModel }) {
         if (loginError) return logger(JSON.stringify(loginError), `ERROR`);
         loginApiData.setOptions(global.config.FCAOption)
         writeFileSync(appStateFile, JSON.stringify(loginApiData.getAppState(), null, '\x09'))
-
-        if (!loginApiData.removeUserFromGroup && loginApiData.gcmember) {
-            loginApiData.removeUserFromGroup = function(userID, threadID, callback) {
-                return loginApiData.gcmember("remove", userID, threadID, callback);
-            };
-        }
-
         global.client.api = loginApiData
         global.config.version = '1.2.14'
         global.client.timeStart = new Date().getTime(),
             function () {
-                const listCommand = readdirSync(global.client.mainPath + '/RAZA/commands').filter(command => command.endsWith('.js') && !command.includes('example') && !global.config.commandDisabled.includes(command));
+                const listCommand = readdirSync(global.client.mainPath + '/Priyansh/commands').filter(command => command.endsWith('.js') && !command.includes('example') && !global.config.commandDisabled.includes(command));
                 for (const command of listCommand) {
                     try {
-                        var module = require(global.client.mainPath + '/RAZA/commands/' + command);
-                        if (!module.config || !module.run || !module.config.commandCategory) throw new Error(global.getText('kashif', 'errorFormat'));
-                        if (global.client.commands.has(module.config.name || '')) throw new Error(global.getText('kashif', 'nameExist'));
-                        if (!module.languages || typeof module.languages != 'object' || Object.keys(module.languages).length == 0) logger.loader(global.getText('kashif', 'notFoundLanguage', module.config.name), 'warn');
+                        var module = require(global.client.mainPath + '/Priyansh/commands/' + command);
+                        if (!module.config || !module.run || !module.config.commandCategory) throw new Error(global.getText('priyansh', 'errorFormat'));
+                        if (global.client.commands.has(module.config.name || '')) throw new Error(global.getText('priyansh', 'nameExist'));
+                        if (!module.languages || typeof module.languages != 'object' || Object.keys(module.languages).length == 0) logger.loader(global.getText('priyansh', 'notFoundLanguage', module.config.name), 'warn');
                         if (module.config.dependencies && typeof module.config.dependencies == 'object') {
                             for (const reqDependencies in module.config.dependencies) {
                                 const reqDependenciesPath = join(__dirname, 'nodemodules', 'node_modules', reqDependencies);
@@ -167,7 +162,7 @@ function onBot({ models: botModel }) {
                                 } catch {
                                     var check = false;
                                     var isError;
-                                    logger.loader(global.getText('kashif', 'notFoundPackage', reqDependencies, module.config.name), 'warn');
+                                    logger.loader(global.getText('priyansh', 'notFoundPackage', reqDependencies, module.config.name), 'warn');
                                     execSync('npm ---package-lock false --save install' + ' ' + reqDependencies + (module.config.dependencies[reqDependencies] == '*' || module.config.dependencies[reqDependencies] == '' ? '' : '@' + module.config.dependencies[reqDependencies]), { 'stdio': 'inherit', 'env': process['env'], 'shell': true, 'cwd': join(__dirname, 'nodemodules') });
                                     for (let i = 1; i <= 3; i++) {
                                         try {
@@ -179,10 +174,10 @@ function onBot({ models: botModel }) {
                                         } catch (error) { isError = error; }
                                         if (check || !isError) break;
                                     }
-                                    if (!check || isError) throw global.getText('kashif', 'cantInstallPackage', reqDependencies, module.config.name, isError);
+                                    if (!check || isError) throw global.getText('priyansh', 'cantInstallPackage', reqDependencies, module.config.name, isError);
                                 }
                             }
-                            logger.loader(global.getText('kashif', 'loadedPackage', module.config.name));
+                            logger.loader(global.getText('priyansh', 'loadedPackage', module.config.name));
                         }
                         if (module.config.envConfig) try {
                             for (const envConfig in module.config.envConfig) {
@@ -192,9 +187,9 @@ function onBot({ models: botModel }) {
                                 else global.configModule[module.config.name][envConfig] = module.config.envConfig[envConfig] || '';
                                 if (typeof global.config[module.config.name][envConfig] == 'undefined') global.config[module.config.name][envConfig] = module.config.envConfig[envConfig] || '';
                             }
-                            logger.loader(global.getText('kashif', 'loadedConfig', module.config.name));
+                            logger.loader(global.getText('priyansh', 'loadedConfig', module.config.name));
                         } catch (error) {
-                            throw new Error(global.getText('kashif', 'loadedConfig', module.config.name, JSON.stringify(error)));
+                            throw new Error(global.getText('priyansh', 'loadedConfig', module.config.name, JSON.stringify(error)));
                         }
                         if (module.onLoad) {
                             try {
@@ -203,24 +198,24 @@ function onBot({ models: botModel }) {
                                 moduleData.models = botModel;
                                 module.onLoad(moduleData);
                             } catch (_0x20fd5f) {
-                                throw new Error(global.getText('kashif', 'cantOnload', module.config.name, JSON.stringify(_0x20fd5f)), 'error');
+                                throw new Error(global.getText('priyansh', 'cantOnload', module.config.name, JSON.stringify(_0x20fd5f)), 'error');
                             };
                         }
                         if (module.handleEvent) global.client.eventRegistered.push(module.config.name);
                         global.client.commands.set(module.config.name, module);
-                        logger.loader(global.getText('kashif', 'successLoadModule', module.config.name));
+                        logger.loader(global.getText('priyansh', 'successLoadModule', module.config.name));
                     } catch (error) {
-                        logger.loader(global.getText('kashif', 'failLoadModule', module.config.name, error), 'error');
+                        logger.loader(global.getText('priyansh', 'failLoadModule', module.config.name, error), 'error');
                     };
                 }
             }(),
             function() {
-                const events = readdirSync(global.client.mainPath + '/RAZA/events').filter(event => event.endsWith('.js') && !global.config.eventDisabled.includes(event));
+                const events = readdirSync(global.client.mainPath + '/Priyansh/events').filter(event => event.endsWith('.js') && !global.config.eventDisabled.includes(event));
                 for (const ev of events) {
                     try {
-                        var event = require(global.client.mainPath + '/RAZA/events/' + ev);
-                        if (!event.config || !event.run) throw new Error(global.getText('kashif', 'errorFormat'));
-                        if (global.client.events.has(event.config.name) || '') throw new Error(global.getText('kashif', 'nameExist'));
+                        var event = require(global.client.mainPath + '/Priyansh/events/' + ev);
+                        if (!event.config || !event.run) throw new Error(global.getText('priyansh', 'errorFormat'));
+                        if (global.client.events.has(event.config.name) || '') throw new Error(global.getText('priyansh', 'nameExist'));
                         if (event.config.dependencies && typeof event.config.dependencies == 'object') {
                             for (const dependency in event.config.dependencies) {
                                 const _0x21abed = join(__dirname, 'nodemodules', 'node_modules', dependency);
@@ -232,7 +227,7 @@ function onBot({ models: botModel }) {
                                 } catch {
                                     let check = false;
                                     let isError;
-                                    logger.loader(global.getText('kashif', 'notFoundPackage', dependency, event.config.name), 'warn');
+                                    logger.loader(global.getText('priyansh', 'notFoundPackage', dependency, event.config.name), 'warn');
                                     execSync('npm --package-lock false --save install' + dependency + (event.config.dependencies[dependency] == '*' || event.config.dependencies[dependency] == '' ? '' : '@' + event.config.dependencies[dependency]), { 'stdio': 'inherit', 'env': process['env'], 'shell': true, 'cwd': join(__dirname, 'nodemodules') });
                                     for (let i = 1; i <= 3; i++) {
                                         try {
@@ -245,10 +240,10 @@ function onBot({ models: botModel }) {
                                         } catch (error) { isError = error; }
                                         if (check || !isError) break;
                                     }
-                                    if (!check || isError) throw global.getText('kashif', 'cantInstallPackage', dependency, event.config.name);
+                                    if (!check || isError) throw global.getText('priyansh', 'cantInstallPackage', dependency, event.config.name);
                                 }
                             }
-                            logger.loader(global.getText('kashif', 'loadedPackage', event.config.name));
+                            logger.loader(global.getText('priyansh', 'loadedPackage', event.config.name));
                         }
                         if (event.config.envConfig) try {
                             for (const _0x5beea0 in event.config.envConfig) {
@@ -258,35 +253,36 @@ function onBot({ models: botModel }) {
                                 else global.configModule[event.config.name][_0x5beea0] = event.config.envConfig[_0x5beea0] || '';
                                 if (typeof global.config[event.config.name][_0x5beea0] == 'undefined') global.config[event.config.name][_0x5beea0] = event.config.envConfig[_0x5beea0] || '';
                             }
-                            logger.loader(global.getText('kashif', 'loadedConfig', event.config.name));
+                            logger.loader(global.getText('priyansh', 'loadedConfig', event.config.name));
                         } catch (error) {
-                            throw new Error(global.getText('kashif', 'loadedConfig', event.config.name, JSON.stringify(error)));
+                            throw new Error(global.getText('priyansh', 'loadedConfig', event.config.name, JSON.stringify(error)));
                         }
                         if (event.onLoad) try {
                             const eventData = {};
                             eventData.api = loginApiData, eventData.models = botModel;
                             event.onLoad(eventData);
                         } catch (error) {
-                            throw new Error(global.getText('kashif', 'cantOnload', event.config.name, JSON.stringify(error)), 'error');
+                            throw new Error(global.getText('priyansh', 'cantOnload', event.config.name, JSON.stringify(error)), 'error');
                         }
                         global.client.events.set(event.config.name, event);
-                        logger.loader(global.getText('kashif', 'successLoadModule', event.config.name));
+                        logger.loader(global.getText('priyansh', 'successLoadModule', event.config.name));
                     } catch (error) {
-                        logger.loader(global.getText('kashif', 'failLoadModule', event.config.name, error), 'error');
+                        logger.loader(global.getText('priyansh', 'failLoadModule', event.config.name, error), 'error');
                     }
                 }
             }()
-        logger.loader(global.getText('kashif', 'finishLoadModule', global.client.commands.size, global.client.events.size))
-        logger.loader(`Startup Time: ${((Date.now() - global.client.timeStart) / 1000).toFixed()}s`)
+        logger.loader(global.getText('priyansh', 'finishLoadModule', global.client.commands.size, global.client.events.size)) 
+        logger.loader(`Startup Time: ${((Date.now() - global.client.timeStart) / 1000).toFixed()}s`)   
         logger.loader('===== [ ' + (Date.now() - global.client.timeStart) + 'ms ] =====')
-        writeFileSync(global.client['configPath'], JSON['stringify'](global.config, null, 4), 'utf8')
+        writeFileSync(global.client['configPath'], JSON['stringify'](global.config, null, 4), 'utf8') 
+        unlinkSync(global['client']['configPath'] + '.temp');        
         const listenerData = {};
-        listenerData.api = loginApiData;
+        listenerData.api = loginApiData; 
         listenerData.models = botModel;
         const listener = require('./includes/listen')(listenerData);
 
         function listenerCallback(error, message) {
-            if (error) return logger(global.getText('kashif', 'handleListenError', JSON.stringify(error)), 'error');
+            if (error) return logger(global.getText('priyansh', 'handleListenError', JSON.stringify(error)), 'error');
             if (['presence', 'typ', 'read_receipt'].some(data => data == message.type)) return;
             if (global.config.DeveloperMode == !![]) console.log(message);
             return listener(message);
@@ -297,7 +293,7 @@ function onBot({ models: botModel }) {
         } catch (error) {
             return //process.exit(0);
         };
-        if (!global.checkBan) logger(global.getText('kashif', 'warningSourceCode'), '[ GLOBAL BAN ]');
+        if (!global.checkBan) logger(global.getText('priyansh', 'warningSourceCode'), '[ GLOBAL BAN ]');
     });
 }
 
@@ -310,11 +306,13 @@ function onBot({ models: botModel }) {
         authentication.Sequelize = Sequelize;
         authentication.sequelize = sequelize;
         const models = require('./includes/database/model')(authentication);
-        logger(global.getText('kashif', 'successConnectDatabase'), '[ DATABASE ]');
+        logger(global.getText('priyansh', 'successConnectDatabase'), '[ DATABASE ]');
         const botData = {};
         botData.models = models
         onBot(botData);
-    } catch (error) { logger(global.getText('kashif', 'successConnectDatabase', JSON.stringify(error)), '[ DATABASE ]'); }
+    } catch (error) { logger(global.getText('priyansh', 'successConnectDatabase', JSON.stringify(error)), '[ DATABASE ]'); }
 })();
 
 process.on('unhandledRejection', (err, p) => {});
+
+    
